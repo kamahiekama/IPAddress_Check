@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using System.Net.NetworkInformation;
 using System.Net;
@@ -44,19 +44,19 @@ public class GetIPAddress : MonoBehaviour
     /// </summary>
     /// <returns>
     /// 0: Debug Log
-    /// 1~: IP Address (—Dæ“x‡)
+    /// 1~: IP Address (å„ªå…ˆåº¦é †)
     /// </returns>
     public static List<string> GetValidIpAddress()
     {
         StringBuilder sb = new StringBuilder();
 
-        // 192.168 ‚Ì—Lü
+        // 192.168 ã®æœ‰ç·š
         List<string> addresses0 = new List<string>();
-        // 192.168 ‚Ì–³ü
+        // 192.168 ã®ç„¡ç·š
         List<string> addresses1 = new List<string>();
-        // ‚»‚Ì‘¼‚Ì—Lü
+        // ãã®ä»–ã®æœ‰ç·š
         List<string> addresses2 = new List<string>();
-        // ‚»‚Ì‘¼‚Ì–³ü
+        // ãã®ä»–ã®ç„¡ç·š
         List<string> addresses3 = new List<string>();
 
         var networkInterfaces = NetworkInterface.GetAllNetworkInterfaces();
