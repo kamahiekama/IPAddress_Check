@@ -5,6 +5,7 @@ using System.Net;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Text;
+using System;
 
 public class GetIPAddress : MonoBehaviour
 {
@@ -25,24 +26,62 @@ public class GetIPAddress : MonoBehaviour
 
         if (lastUpdate + 1.0f < current)
         {
-            string[] getAddresses = GetValidIpAddress();
-            text.text = "Debug Info\r\n" + getAddresses[0]
-                        + "\r\n\r\nResult\r\n" + getAddresses[1];
+            List<string> getAddresses = GetValidIpAddress();
+            string s = "";
+            for(int i = 1; i < getAddresses.Count; i++)
+            {
+                s += getAddresses[i] + "\r\n";
+            }
+            s += "\r\n\r\nDebug Info\r\n" + getAddresses[0];
+
+            text.text = s;
             lastUpdate = current;
         }
     }
 
-    public static string[] GetValidIpAddress()
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns>
+    /// 0: Debug Log
+    /// 1~: IP Address (óDêÊìxèá)
+    /// </returns>
+    public static List<string> GetValidIpAddress()
     {
         StringBuilder sb = new StringBuilder();
-        StringBuilder sb2 = new StringBuilder();
+
+        // 192.168 ÇÃóLê¸
+        List<string> addresses0 = new List<string>();
+        // 192.168 ÇÃñ≥ê¸
+        List<string> addresses1 = new List<string>();
+        // ÇªÇÃëºÇÃóLê¸
+        List<string> addresses2 = new List<string>();
+        // ÇªÇÃëºÇÃñ≥ê¸
+        List<string> addresses3 = new List<string>();
 
         var networkInterfaces = NetworkInterface.GetAllNetworkInterfaces();
 
         foreach (var networkInterface in networkInterfaces)
         {
             sb.Append("----------------------------------------------------");
-            sb.Append("statjs : " + networkInterface.OperationalStatus + "\r\n");
+            sb.Append("status : " + networkInterface.OperationalStatus + "\r\n");
+
+            string connectionType = networkInterface.NetworkInterfaceType.ToString();
+
+            bool isCable = false;
+            switch (networkInterface.NetworkInterfaceType)
+            {
+                case NetworkInterfaceType.Wireless80211:
+                    connectionType = "Wi-Fi";
+                    break;
+                case NetworkInterfaceType.Ethernet:
+                case NetworkInterfaceType.GigabitEthernet:
+                    connectionType = "Ethernet";
+                    isCable = true;
+                    break;
+            }
+
+            sb.Append("connect type : " + connectionType + "\r\n");
 
             var ipProperties = networkInterface.GetIPProperties();
             var unicastAddresses = ipProperties.UnicastAddresses;
@@ -64,8 +103,31 @@ public class GetIPAddress : MonoBehaviour
                 if (networkInterface.OperationalStatus == OperationalStatus.Up
                     || networkInterface.OperationalStatus == OperationalStatus.Unknown)
                 {
-                    sb.Append("Status OK : " + address.Address.ToString() + "\r\n");
-                    sb2.Append(address.Address.ToString() + "\r\n");
+                    string addr = address.Address.ToString();
+                    sb.Append("Status OK : " + addr + "\r\n");
+
+                    if (addr.StartsWith("192.168."))
+                    {
+                        if (isCable)
+                        {
+                            addresses0.Add(addr);
+                        }
+                        else
+                        {
+                            addresses1.Add(addr);
+                        }
+                    }
+                    else
+                    {
+                        if (isCable)
+                        {
+                            addresses2.Add(addr);
+                        }
+                        else
+                        {
+                            addresses3.Add(addr);
+                        }
+                    }
                 } else
                 {
                     sb.Append("Status NG : " + address.Address.ToString() + "\r\n");
@@ -73,9 +135,13 @@ public class GetIPAddress : MonoBehaviour
             }
         }
 
-        string[] result = new string[2];
-        result[0] = sb.ToString();
-        result[1] = sb2.ToString();
+        List<string> result = new List<string>();
+
+        result.Add(sb.ToString());
+        result.AddRange(addresses0);
+        result.AddRange(addresses1);
+        result.AddRange(addresses2);
+        result.AddRange(addresses3);
 
         return result;
     }
