@@ -66,7 +66,11 @@ public class GetIPAddress : MonoBehaviour
             sb.Append("----------------------------------------------------");
             sb.Append("status : " + networkInterface.OperationalStatus + "\r\n");
 
+            sb.Append("Name: " + networkInterface.Name + "\r\n");
+            //sb.Append("Description: " + networkInterface.Description + "\r\n");
+
             string connectionType = networkInterface.NetworkInterfaceType.ToString();
+
 
             bool isCable = false;
             switch (networkInterface.NetworkInterfaceType)
