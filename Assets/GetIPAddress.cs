@@ -61,8 +61,15 @@ public class GetIPAddress : MonoBehaviour
                     continue;
                 }
 
-                sb.Append("OK : " + address.Address.ToString() + "\r\n");
-                sb2.Append(address.Address.ToString() + "\r\n");
+                if (networkInterface.OperationalStatus == OperationalStatus.Up
+                    || networkInterface.OperationalStatus == OperationalStatus.Unknown)
+                {
+                    sb.Append("Status OK : " + address.Address.ToString() + "\r\n");
+                    sb2.Append(address.Address.ToString() + "\r\n");
+                } else
+                {
+                    sb.Append("Status NG : " + address.Address.ToString() + "\r\n");
+                }
             }
         }
 
