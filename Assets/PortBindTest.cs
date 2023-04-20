@@ -59,7 +59,7 @@ public class PortBindTest : MonoBehaviour
         text.text += s + "\r\n";
     }
 
-    public static bool IsPortInUse(int port){
+    public bool IsPortInUse(int port){
         UdpClient udp = new UdpClient();
 
         bool inuse = false;
@@ -70,9 +70,8 @@ public class PortBindTest : MonoBehaviour
         }
         catch (SocketException ex) 
         {
-            if (ex.ErrorCode == 10048){
+            log(ex.StackTrace);
             inuse = true;
-            }
         }
 
         udp.Close();
